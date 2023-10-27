@@ -7,4 +7,4 @@ gc()
 if (!"pacman" %in% installed.packages()) install.packages("pacman")
 pacman::p_load(tidyverse, lubridate, readr, reshape2, zoo, patchwork, hydroGOF, 
                viridis, scales, gridExtra, maps, hexbin, rnaturalearth, sf, 
-               nlstools, minpack.lm, imputeTS, hydroGOF, devtools)
+               nlstools, minpack.lm, imputeTS, hydroGOF, devtools, vroom)

@@ -32,6 +32,20 @@ time_base_ebu <- filtered_lakes %>% ungroup(.) %>%
   na.omit(.) %>%
   filter(variable == "ch4_ebu") %>%
   filter(value > 0)
+
+mean_time_ebu <- 10^mean(log10(time_base_ebu$value))
+
+sd_time_ebu <- time_base_ebu %>% group_by(num_months_sampled) %>%
+  summarise_at(vars(value),
+               list(sd = sd)) %>%
+  ungroup(.) %>%
+  mutate(mean_time_ebu = mean_time_ebu)
+
+sd_time_ebu <- time_base_ebu %>% group_by(num_months_sampled) %>%
+  summarise(sd = 10^sd(log10(value))) %>%
+  ungroup(.) %>%
+  mutate(mean_time_ebu = mean_time_ebu)
+
 # diffusion
 time_base_diff <- filtered_lakes %>% ungroup(.) %>%
   select(num_months_sampled, ch4_ebu, ch4_diff) %>% 
@@ -39,6 +53,8 @@ time_base_diff <- filtered_lakes %>% ungroup(.) %>%
   na.omit(.) %>%
   filter(variable == "ch4_diff")%>%
   filter(value > 0)
+
+
 
 # assign a vector that is associated with the # of total duration
 error_diff_months <- as.data.frame(seq(1,48, by = 1)) %>%
@@ -135,11 +151,12 @@ error_ebu_time <- rbind(low_bound_ebu_time, high_bound_ebu_time) %>%
 
 time_models <- rbind(error_ebu_time, error_diff_time) 
 
-time_error_ebu <- ggplot(error_ebu_time, aes(num_months_sampled, value, color = model))+
+time_error_ebu <- ggplot(sd_time_ebu, aes(num_months_sampled, mean_time_ebu), color = "black")+
   geom_jitter(data = time_base_ebu, aes(x = num_months_sampled, y = value, color = variable), 
-              fill = "grey", size = 2, pch = 21, inherit.aes = F)+
+              fill = "grey", size = 2, pch = 21, inherit.aes = F, width = 0.1)+
   geom_line(lwd = 2)+
-  scale_color_manual(values = c("blue", "blue4","blue4"))+
+  geom_errorbar(aes(ymin = mean_time_ebu-2*sd, ymax = mean_time_ebu+2*sd), width = 0.25)+
+  scale_color_manual(values = c("blue", "blue4"))+
   scale_y_log10(breaks = 10^(-4:4), labels = trans_format("log10", math_format(10^.x)))+
   xlab("")+
   ylab("Range of Potential Flux Variability")+
