@@ -26,7 +26,7 @@ map <- ggplot() +
   xlab("Longitude") + ylab("Latitude") +
   #labs(title = paste0("  ",length(k$`Waterbody Type`)," Lakes and Reservoirs"))+
   geom_sf(data = k, size = 2, aes(shape = Emission, color = `Waterbody Type`))+
-  scale_color_manual(values = c("purple4", "cyan4"))+
+  scale_color_manual(values = c("blue", "orange"))+
   theme_void()+
   theme(legend.position = c(0.11, 0.5),
         legend.direction = "vertical",
