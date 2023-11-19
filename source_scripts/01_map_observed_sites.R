@@ -13,8 +13,8 @@ k <- map %>%
   select(lat, lon, waterbody_type, ch4_ebu, ch4_diff) %>%
   group_by(lat, lon, waterbody_type) %>%
   summarize_all(funs(mean)) %>%
-  mutate(`Emission` = ifelse(!is.na(ch4_ebu),"Both Fluxes", "Only Diffusion"),
-         `Emission` = ifelse(is.na(ch4_diff),"Only Ebullition", `Emission`)) %>%
+  mutate(`Emission` = ifelse(!is.na(ch4_ebu),"Both Fluxes", "Diffusion"),
+         `Emission` = ifelse(is.na(ch4_diff),"Ebullition", `Emission`)) %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
   st_transform("+proj=eqearth +wktext") %>%
   filter(waterbody_type == "lake" | waterbody_type == "reservoir") %>%

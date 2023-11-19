@@ -49,7 +49,7 @@ time_error_ebu_lakes <- ggplot(data = time_base_ebu_lake, aes(x = num_months_sam
   geom_point(data = sd_time_ebu_lake, aes(x = num_months_sampled, y = max), size = 4,pch=21, fill = "darkblue")+
   geom_point(data = sd_time_ebu_lake, aes(x = num_months_sampled, y = min), size = 4,pch=21, fill = "cyan")+
   scale_y_log10(breaks = 10^(-4:4), labels = trans_format("log10", math_format(10^.x)))+
-  xlab("")+
+  xlab("Number of Months Sampled")+
   ylab("Range of Potential Flux Variability")+
   labs(title = "Ebullition Lakes")+
   theme_classic()+
@@ -145,7 +145,7 @@ time_error_diff_res <- ggplot(data = time_base_diff_res, aes(x = num_months_samp
   scale_y_log10(breaks = 10^(-4:4), labels = trans_format("log10", math_format(10^.x)))+
   xlab("")+
   ylab("")+
-  labs(title = "Diffusion reservoirs")+
+  labs(title = "Diffusion Reservoirs")+
   theme_classic()+
   theme(legend.position = "none",
         axis.text = element_text(color = "black"))
@@ -178,7 +178,7 @@ space_error_ebu_lakes <- ggplot(data = space_base_ebu_lake, aes(x = num_sites_sa
   geom_point(data = sd_space_ebu_lake, aes(x = num_sites_sampled, y = max), size = 4,pch=21, fill = "red4")+
   geom_point(data = sd_space_ebu_lake, aes(x = num_sites_sampled, y = min), size = 4,pch=21, fill = "pink")+
   scale_y_log10(breaks = 10^(-4:4), labels = trans_format("log10", math_format(10^.x)))+
-  xlab("")+
+  xlab("Number of Sites Sampled")+
   ylab("")+
   labs(title = "Ebullition Lakes")+
   theme_classic()+
@@ -245,7 +245,7 @@ space_error_ebu_res <- ggplot(data = space_base_ebu_res, aes(x = num_sites_sampl
   scale_y_log10(breaks = 10^(-4:4), labels = trans_format("log10", math_format(10^.x)))+
   xlab("")+
   ylab("")+
-  labs(title = "Ebullition reservoirs")+
+  labs(title = "Ebullition Reservoirs")+
   theme_classic()+
   theme(legend.position = "none",
         axis.text = element_text(color = "black"))
@@ -276,7 +276,7 @@ space_error_diff_res <- ggplot(data = space_base_diff_res, aes(x = num_sites_sam
   scale_y_log10(breaks = 10^(-4:4), labels = trans_format("log10", math_format(10^.x)))+
   xlab("")+
   ylab("")+
-  labs(title = "Diffusion reservoirs")+
+  labs(title = "Diffusion Reservoirs")+
   theme_classic()+
   theme(legend.position = "none",
         axis.text = element_text(color = "black"))
@@ -284,11 +284,19 @@ space_error_diff_res <- ggplot(data = space_base_diff_res, aes(x = num_sites_sam
 ylab <- time_error_ebu_lakes$labels$y
 time_error_ebu_lakes$labels$y <- time_error_ebu_lakes$labels$y <- " "
 
-(time_error_diff_lakes + time_error_diff_res + time_error_ebu_lakes + time_error_ebu_res) /
-(space_error_diff_lakes + space_error_diff_res + space_error_ebu_lakes + space_error_ebu_res)
-grid::grid.draw(grid::textGrob(ylab, x = 0.02, rot = 90))
+xlab1 <- time_error_ebu_lakes$labels$x
+time_error_ebu_lakes$labels$x <- time_error_ebu_lakes$labels$x <- " "
 
-ggsave("./figures/spatiotemporal_variability.jpeg", device = "jpeg", dpi = 1000, width = 10, height = 16, units = "in")
+xlab2 <- space_error_ebu_lakes$labels$x
+space_error_ebu_lakes$labels$x <- space_error_ebu_lakes$labels$x <- " "
+
+(time_error_diff_lakes | time_error_diff_res | time_error_ebu_lakes | time_error_ebu_res) /
+(space_error_diff_lakes | space_error_diff_res | space_error_ebu_lakes | space_error_ebu_res)
+grid::grid.draw(grid::textGrob(ylab, x = 0.02, rot = 90))
+grid::grid.draw(grid::textGrob(xlab1, y = 0.51, rot = 0))
+grid::grid.draw(grid::textGrob(xlab2, y = 0.02, rot = 0))
+
+ggsave("./figures/spatiotemporal_variability.jpeg", device = "jpeg", dpi = 1000, width = 16, height = 6, units = "in")
 
 
 time_filtered_lakes_error <- filtered_lakes %>%

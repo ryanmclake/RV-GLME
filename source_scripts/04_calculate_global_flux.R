@@ -4,7 +4,10 @@ gc()
 
 source("./source_scripts/03_fit_equation_scenarios.R")
 
-dat <- vroom::vroom("./source_data/japan_data_from_glcp.csv")
+dat <- vroom::vroom("./source_data/Belgium.csv", col_names = F) %>%
+  rename(year = X1, month = X2, hylak_id = X3, lat = X4, lon = X5, continent = X6, 
+         country = X7, seasonal_area_km2 = X8, lake_type = X9, mean_temp_k = X10, ice_cover_mean = X11) %>%
+  mutate(ice_cover_mean = ifelse(is.na(ice_cover_mean),0,ice_cover_mean))
 
 diff <- dat %>%
   group_by(hylak_id, lat, lon, seasonal_area_km2) %>%
@@ -26,19 +29,23 @@ diff <- dat %>%
          COEFF_HIGH_diffusion = ifelse(ice_cover_mean > 60, 0, COEFF_HIGH_diffusion),
          MODEL_LOW_diffusion = ifelse(ice_cover_mean > 60, 0, MODEL_LOW_diffusion),
          MODEL_HIGH_diffusion = ifelse(ice_cover_mean > 60, 0, MODEL_HIGH_diffusion),
-         BASELINE_diffusion = ifelse(BASELINE_diffusion < 0, 0, BASELINE_diffusion),
-         TIME_LOW_diffusion = ifelse(TIME_LOW_diffusion < 0, 0, TIME_LOW_diffusion),
-         TIME_HIGH_diffusion = ifelse(TIME_HIGH_diffusion < 0, 0, TIME_HIGH_diffusion),
-         SPACE_LOW_diffusion = ifelse(SPACE_LOW_diffusion < 0, 0, SPACE_LOW_diffusion),
-         SPACE_HIGH_diffusion = ifelse(SPACE_HIGH_diffusion < 0, 0, SPACE_HIGH_diffusion),
-         COEFF_LOW_diffusion = ifelse(COEFF_LOW_diffusion < 0, 0, COEFF_LOW_diffusion),
-         COEFF_HIGH_diffusion = ifelse(COEFF_HIGH_diffusion < 0, 0, COEFF_HIGH_diffusion),
-         MODEL_LOW_diffusion = ifelse(MODEL_LOW_diffusion < 0, 0, MODEL_LOW_diffusion),
-         MODEL_HIGH_diffusion = ifelse(MODEL_HIGH_diffusion < 0, 0, MODEL_HIGH_diffusion),
          'date' = lubridate::make_date(year = year, month = month)) %>%
   ungroup(.) %>%
   select(-year, -month) %>%
-  readr::write_csv(., "./output_data/japan_diffusion_prediction.csv")
+  readr::write_csv(., "./output_data/belgium_diffusion_prediction.csv")
+
+
+d <- vroom::vroom("./output_data/belgium_diffusion_prediction.csv") %>%
+  dplyr::group_by(hylak_id, lat, lon) %>%
+  dplyr::summarise(`Baseline Diffusion Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
+                   `Baseline Ebullition Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
+                   `Baseline Diffusion Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
+                   `Baseline Diffusion Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
+                   `Baseline Diffusion Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
+                   `Baseline Diffusion Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
+                   `Baseline Diffusion Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
+                   `Baseline Diffusion Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_BASE_sum.csv")
 
 
 ebu <- dat %>%
@@ -73,5 +80,73 @@ ebu <- dat %>%
          'date' = lubridate::make_date(year = year, month = month)) %>%
   ungroup(.) %>%
   select(-year, -month) %>%
-  readr::write_csv(., "./output_data/japan_ebullition_prediction.csv")
+  readr::write_csv(., "./output_data/belgium_ebullition_prediction.csv")
+
+
+
+
+
+
+
+
+
+
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_BASE.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Baseline Ebullition Predictions` = sum(FOA_mean_ebullition)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_BASE_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_TIME.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Time-low Ebu Predictions` = sum(FOA_time_low_ebu)/sum(total_km2),
+                   `Time-high Ebu Predictions` = sum(FOA_time_high_ebu)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_TIME_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_SPACE.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Space-low Ebu Predictions` = sum(FOA_space_low_ebu)/sum(total_km2),
+                   `Space-high Ebu Predictions` = sum(FOA_space_high_ebu)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_SPACE_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_MODEL.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Model-low Ebu Predictions` = sum(FOA_mean_error_low_ebu)/sum(total_km2),
+                   `Model-high Ebu Predictions` = sum(FOA_mean_error_high_ebu)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_MODEL_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_PARAM.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Param-low Ebu Predictions` = sum(FOA_coefficient_low_ebu)/sum(total_km2),
+                   `Param-high Ebu Predictions` = sum(FOA_coefficient_high_ebu)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_ebullition_variability_PARAM_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_BASE.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Baseline Diffusion Predictions` = sum(FOA_mean_diffusion)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_BASE_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_TIME.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Time-low Diff Predictions` = sum(FOA_time_low_diff)/sum(total_km2),
+                   `Time-high Diff Predictions` = sum(FOA_time_high_diff)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_TIME_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_SPACE.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Space-low Diff Predictions` = sum(FOA_space_low_diff)/sum(total_km2),
+                   `Space-high Diff Predictions` = sum(FOA_space_high_diff)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_SPACE_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_MODEL.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Model-low Diff Predictions` = sum(FOA_mean_error_low_diff)/sum(total_km2),
+                   `Model-high Diff Predictions` = sum(FOA_mean_error_high_diff)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_MODEL_sum.csv")
+
+vroom::vroom("/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_PARAM.csv") %>%
+  dplyr::group_by(centr_lat, centr_lon) %>%
+  dplyr::summarise(`Param-low Diff Predictions` = sum(FOA_coefficient_low_diff)/sum(total_km2),
+                   `Param-high Diff Predictions` = sum(FOA_coefficient_high_diff)/sum(total_km2)) %>%
+  readr::write_csv(., "/central/groups/carnegie_poc/rmcclure/project-GLEE/output/Global_diffusion_variability_PARAM_sum.csv")
 
