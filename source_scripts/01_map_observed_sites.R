@@ -24,7 +24,6 @@ k <- map %>%
 map <- ggplot() +
   geom_sf(data = world, lwd = 0.3, color = "black", fill = "grey90")+
   xlab("Longitude") + ylab("Latitude") +
-  #labs(title = paste0("  ",length(k$`Waterbody Type`)," Lakes and Reservoirs"))+
   geom_sf(data = k, size = 2, aes(shape = Emission, color = `Waterbody Type`))+
   scale_color_manual(values = c("blue", "orange"))+
   theme_void()+
