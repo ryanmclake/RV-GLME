@@ -13,8 +13,8 @@ k <- map %>%
   select(lat, lon, waterbody_type, ch4_ebu, ch4_diff) %>%
   group_by(lat, lon, waterbody_type) %>%
   summarize_all(funs(mean)) %>%
-  mutate(`Emission` = ifelse(!is.na(ch4_ebu),"Both Fluxes", "Only Diffusion"),
-         `Emission` = ifelse(is.na(ch4_diff),"Only Ebullition", `Emission`)) %>%
+  mutate(`Emission` = ifelse(!is.na(ch4_ebu),"Both Fluxes", "Diffusion"),
+         `Emission` = ifelse(is.na(ch4_diff),"Ebullition", `Emission`)) %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
   st_transform("+proj=eqearth +wktext") %>%
   filter(waterbody_type == "lake" | waterbody_type == "reservoir") %>%
@@ -24,7 +24,6 @@ k <- map %>%
 map <- ggplot() +
   geom_sf(data = world, lwd = 0.3, color = "black", fill = "grey90")+
   xlab("Longitude") + ylab("Latitude") +
-  #labs(title = paste0("  ",length(k$`Waterbody Type`)," Lakes and Reservoirs"))+
   geom_sf(data = k, size = 2, aes(shape = Emission, color = `Waterbody Type`))+
   scale_color_manual(values = c("blue", "orange"))+
   theme_void()+

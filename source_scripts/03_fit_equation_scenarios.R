@@ -33,10 +33,12 @@ res_ebu <- d %>% filter(waterbody_type == "reservoir")%>%
 
 ### BASELINE MODEL FITS ###
 # eqn 1 --> Baseline Lake Diffusion
-lake_diff_base = nlsLM(ch4_diff ~ A * a^(temp_for_model_C-20),
+lake_diff_base = nls(ch4_diff ~ A * a^(temp_for_model_C-20),
                       start = list(A = 100, a = 1.1),
                       data = lake_diff,
                       control = nls.lm.control(maxiter=1000))
+
+summary(lake_diff_base)
 
 BASELINE_lake_diff <- function(x){
   predicted_diff_rate = 25.597 * 1.067^(x-20)
@@ -48,6 +50,7 @@ lake_ebu_base = nlsLM(ch4_ebu ~ A * a^(temp_for_model_C-20),
                        start = list(A = 100, a = 1.1),
                        data = lake_ebu,
                        control = nls.lm.control(maxiter=1000))
+summary(lake_ebu_base)
 
 BASELINE_lake_ebu <- function(x){
   predicted_ebu_rate = 79.527 * 1.049^(x-20)
@@ -60,6 +63,8 @@ res_diff_base = nlsLM(ch4_diff ~ A * a^(temp_for_model_C-20),
                        data = res_diff,
                        control = nls.lm.control(maxiter=1000))
 
+summary(res_diff_base)
+
 BASELINE_res_diff <- function(x){
   predicted_diff_rate = 24.836 * 1.026^(x-20)
   return(predicted_diff_rate)
@@ -70,6 +75,8 @@ res_ebu_base = nlsLM(ch4_ebu ~ A * a^(temp_for_model_C-20),
                       start = list(A = 100, a = 1.1),
                       data = res_ebu,
                       control = nls.lm.control(maxiter=1000))
+
+summary(res_ebu_base)
 
 BASELINE_res_ebu <- function(x){
   predicted_ebu_rate = 70.794 * 1.387^(x-20)
