@@ -10,14 +10,21 @@ world <- ne_countries(scale = "medium", returnclass = "sf", continent = c("afric
 
 ## --> Assign the flux pathway to the lakes and reservoirs
 k <- map %>%
+  #select the columns we need
   select(lat, lon, waterbody_type, ch4_ebu, ch4_diff) %>%
+  # group by geographic location and waterbody type
   group_by(lat, lon, waterbody_type) %>%
+  # summarize to single values for each site
   summarize_all(funs(mean)) %>%
+  # assign an Emission type
   mutate(`Emission` = ifelse(!is.na(ch4_ebu),"Both Fluxes", "Diffusion"),
          `Emission` = ifelse(is.na(ch4_diff),"Ebullition", `Emission`)) %>%
+  # convert geographic coordinates to sf objects
   st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
   st_transform("+proj=eqearth +wktext") %>%
+  # select only lakes and reservoirs... There are some goofy rivers and beaver ponds
   filter(waterbody_type == "lake" | waterbody_type == "reservoir") %>%
+  # Assign a more reliable name for the column for the map below
   rename(`Waterbody Type` = waterbody_type)
 
 ## --> Make a global plot
