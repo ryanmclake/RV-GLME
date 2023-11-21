@@ -1,1 +1,7 @@
-GLEE_data_for_model_fitting.csv
+# @RPM for some reason I am having trouble getting my RStudio to ignore the 
+# belgium_combined_and_adjusted_prediction.csv, and even when I revised this
+# .gitignore to supposedly ignore all the files in this folder, it kept showing up
+
+# have you encountered this?? if not, then just a me problem I guess :-/
+*
+!.gitignore

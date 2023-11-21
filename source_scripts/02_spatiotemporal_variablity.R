@@ -32,7 +32,8 @@ time_base_ebu_lake <- filtered_lakes %>% ungroup(.) %>%
   melt(., id.vars = c("num_months_sampled","waterbody_type")) %>%
   na.omit(.) %>%
   filter(variable == "ch4_ebu") %>%
-  filter(value > 0 & value != 497.24000) %>%
+  filter(value > 0 & value != 497.24000) %>% # why is this 497 value being omitted?
+  # can you add a comment about that value?
   ungroup(.)
 
 sd_time_ebu_lake <- time_base_ebu_lake %>% group_by(num_months_sampled) %>%
@@ -160,7 +161,8 @@ space_base_ebu_lake <- filtered_lakes %>% ungroup(.) %>%
   filter(waterbody_type != "pond" & waterbody_type == "lake") %>%
   melt(., id.vars = c("num_sites_sampled","waterbody_type")) %>%
   na.omit(.) %>%
-  filter(variable == "ch4_ebu" & num_sites_sampled != 13 &
+  filter(variable == "ch4_ebu" & num_sites_sampled != 13 & # why are these number of sites sampled being omitted?
+           # can you add a comment to explain that?
            num_sites_sampled != 27 & num_sites_sampled != 30 & num_sites_sampled != 41) %>%
   ungroup(.)
 
@@ -192,7 +194,7 @@ space_base_diff_lake <- filtered_lakes %>% ungroup(.) %>%
   filter(waterbody_type != "pond" & waterbody_type == "lake") %>%
   melt(., id.vars = c("num_sites_sampled","waterbody_type")) %>%
   na.omit(.) %>%
-  filter(variable == "ch4_diff" & num_sites_sampled<200) %>%
+  filter(variable == "ch4_diff" & num_sites_sampled<200) %>% # again, why less than 200?
   filter(value > 0) %>%
   ungroup(.)
 
@@ -225,6 +227,7 @@ space_base_ebu_res <- filtered_lakes %>% ungroup(.) %>%
   melt(., id.vars = c("num_sites_sampled","waterbody_type")) %>%
   na.omit(.) %>%
   filter(variable == "ch4_ebu" & num_sites_sampled != 14 &num_sites_sampled != 18) %>%
+  # can you add a comment about why these particular numbers of sites are being omitted?
   filter(value > 0) %>%
   ungroup(.)
 
