@@ -8,7 +8,7 @@ if (!"pacman" %in% installed.packages()) install.packages("pacman")
 pacman::p_load(ggplot2, tidyverse, lubridate, readr, reshape2, zoo, patchwork,
                scales, gridExtra, maps, hexbin, rnaturalearth, sf, 
                nlstools, minpack.lm, imputeTS, hydroGOF, devtools, vroom,
-               rnaturalearthdata)
+               rnaturalearthdata, rnaturalearthhires)
 
 # Ryan, the following packages wouldn't load for me 
 # Failed to install/load:
@@ -32,3 +32,8 @@ pacman::p_load(ggplot2, tidyverse, lubridate, readr, reshape2, zoo, patchwork,
 #   libudunits2.so.0: cannot open shared object file: No such file or directory
 
 # so now I am switching over to my laptop b/c I think this is a Docker problem
+
+# also adding in rnaturalearthdata and rnaturalearthhires, which were needed later
+# on but not included here
+
+# WAIT do you even need hydroGOF for this repo????? I got through the whole things w/o it....
