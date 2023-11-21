@@ -1,20 +1,20 @@
-library(dplyr)
-library(ggplot2)
 # Clear your environment and memory
 rm(list=ls())
 gc()
 
-
+# get map of belgium
 belgium <- ne_states(country = "belgium", returnclass = "sf")%>%
   st_transform("+proj=eqearth +wktext") %>%
   select(wikipedia)
 
+# read the estiamtes form the previous script
 FLUX_ESTIAMTES <- read_csv("./output_data/belgium_combined_and_adjusted_prediction.csv") %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
   st_transform("+proj=eqearth +wktext")
   
-
+#Make the baseline map 
 baseline <- FLUX_ESTIAMTES %>% select(geometry,`Baseline Estimate`) %>%
+  # filter spurious estiamtes
   filter(`Baseline Estimate` < quantile(.$`Baseline Estimate`, 0.95)) %>%
 ggplot(.) +
   geom_sf(lwd = 0.05, pch=16,size = 4,
@@ -38,7 +38,6 @@ ggplot(.) +
 
 
 #### TEMPORAL MAPS #####
-
 time_low <- FLUX_ESTIAMTES %>% select(geometry,`Time-Low Estimate`) %>%
   filter(`Time-Low Estimate` < quantile(.$`Time-Low Estimate`, 0.95)) %>%
   ggplot(.) +
