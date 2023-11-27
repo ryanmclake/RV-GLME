@@ -27,11 +27,8 @@ diff <- dat %>%
          COEFF_HIGH_diffusion = ifelse(lake_type == 1, mapply(COEFF_HIGH_lake_diff, x=mean_temp_k-273.15), mapply(COEFF_HIGH_res_diff, x=mean_temp_k-273.15)),
          MODEL_LOW_diffusion = ifelse(lake_type == 1, mapply(MODEL_LOW_lake_diff, x=mean_temp_k-273.15), mapply(MODEL_LOW_res_diff, x=mean_temp_k-273.15)),
          MODEL_HIGH_diffusion = ifelse(lake_type == 1, mapply(MODEL_HIGH_lake_diff, x=mean_temp_k-273.15), mapply(MODEL_HIGH_res_diff, x=mean_temp_k-273.15)),
-<<<<<<< HEAD
-=======
          # if the ice cover is over 60%, cut off fluxes to 0
          # we may need to clean this up according to MFM and YY
->>>>>>> fc21137318f516a958c239045fcc1b2271b8c237
          BASELINE_diffusion = ifelse(ice_cover_mean > 60, 0, BASELINE_diffusion),
          TIME_LOW_diffusion = ifelse(ice_cover_mean > 60, 0, TIME_LOW_diffusion),
          TIME_HIGH_diffusion = ifelse(ice_cover_mean > 60, 0, TIME_HIGH_diffusion),
@@ -41,12 +38,9 @@ diff <- dat %>%
          COEFF_HIGH_diffusion = ifelse(ice_cover_mean > 60, 0, COEFF_HIGH_diffusion),
          MODEL_LOW_diffusion = ifelse(ice_cover_mean > 60, 0, MODEL_LOW_diffusion),
          MODEL_HIGH_diffusion = ifelse(ice_cover_mean > 60, 0, MODEL_HIGH_diffusion),
-<<<<<<< HEAD
-=======
          # although there are basically no emissions below zero, However, this clears this
          # up in case this happens. There are always some spurious data since this 
          # data product is like 300+ million rows
->>>>>>> fc21137318f516a958c239045fcc1b2271b8c237
          BASELINE_diffusion = ifelse(BASELINE_diffusion < 0, 0, BASELINE_diffusion),
          TIME_LOW_diffusion = ifelse(TIME_LOW_diffusion < 0, 0, TIME_LOW_diffusion),
          TIME_HIGH_diffusion = ifelse(TIME_HIGH_diffusion < 0, 0, TIME_HIGH_diffusion),
@@ -131,7 +125,7 @@ ebu <- dat %>%
 # across the whole waterbody
 
 # read in derived data product from code
-lit <- read_csv("./source_data/global_littoral_area.csv")
+lit <- read_delim("./output_data/global_littoral_area.csv", delim = " ")
 
 e <- vroom::vroom("./output_data/belgium_ebullition_prediction.csv") %>%
   dplyr::group_by(hylak_id, lat, lon) %>%

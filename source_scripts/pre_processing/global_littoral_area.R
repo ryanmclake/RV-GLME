@@ -1,5 +1,6 @@
 ### This is a script that pulls individual .tif bathymetry files from https://www.nature.com/articles/s41597-022-01132-9
 ### and calculates the area of the lake with depths "LESS THAN/SHALLOWER THAN" 3 meters. A proxy for ebullition emissions following Bastviken et al.,2004 
+### NOTE - this code can be applied to test any depth. So if you want to explore a photoc zone ~8.5 meters, then you can calculate that across all HydroLakes. 
 
 # Clear your environment and memory
 rm(list=ls())
