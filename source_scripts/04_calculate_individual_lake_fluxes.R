@@ -134,7 +134,7 @@ ebu <- dat %>%
 # the pipe below, similar to how you've done in other places
 
 # read in derived data product from code
-lit <- read_delim("./source_data/global_littoral_area.csv", delim = " ")
+lit <- read_delim("./output_data/global_littoral_area.csv", delim = " ")
 
 e <- vroom::vroom("./output_data/belgium_ebullition_prediction.csv") %>%
   dplyr::group_by(hylak_id, lat, lon) %>%
