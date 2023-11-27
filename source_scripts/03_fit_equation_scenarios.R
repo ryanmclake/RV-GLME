@@ -65,6 +65,8 @@ res_diff_base = nlsLM(ch4_diff ~ A * a^(temp_for_model_C-20),
 
 summary(res_diff_base)
 
+# function to calculate the difference in predicted diffusion between each scenario
+# and the baseline scenario
 BASELINE_res_diff <- function(x){
   predicted_diff_rate = 24.836 * 1.026^(x-20)
   return(predicted_diff_rate)
@@ -373,3 +375,4 @@ MODEL_HIGH_res_ebu <- function(x){
   predicted_ebu_rate = (58.530 * 1.428^(x-20)) + 425.2
   return(predicted_ebu_rate)
 }
+

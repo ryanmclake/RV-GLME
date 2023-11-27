@@ -58,6 +58,8 @@ diff <- dat %>%
   readr::write_csv(., "./output_data/belgium_diffusion_prediction.csv")
 
 # Correct fluxes to match latest papers and scale to mgCH4 m-2 yr-1
+# @RPM the comment about correcting fluxes to match latest papers is a little
+# cryptic to me - what does that mean? do you mean converting the units?
 d <- vroom::vroom("./output_data/belgium_diffusion_prediction.csv") %>%
  dplyr::group_by(hylak_id, lat, lon) %>%
  dplyr::summarise(`Baseline Estimate` = sum(BASELINE_diffusion)/sum(seasonal_area_km2),
@@ -123,6 +125,13 @@ ebu <- dat %>%
 # this determines what percentage of the lake is <3m (according to Bastvike threshold)
 # and then multiplies it by that fraction to correct so ebullition is not assumed to occur 
 # across the whole waterbody
+
+# @RPM this does sound cool! again, can you clarify what "correct ebullition fluxes"
+# means if it's not about converting the units?
+
+# and is 0.001 some tiny rate of ebullition that you are assuming in deep areas?
+# it would be helpful to insert the annotation above into the relevant spots in
+# the pipe below, similar to how you've done in other places
 
 # read in derived data product from code
 lit <- read_delim("./output_data/global_littoral_area.csv", delim = " ")
