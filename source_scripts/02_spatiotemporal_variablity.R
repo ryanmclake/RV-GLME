@@ -24,6 +24,33 @@ filtered_lakes <- base %>%
   mutate(temp_for_model_K = ifelse(n_distinct(effective_obs_wtemp_k) == 0, mean_temp_k, effective_obs_wtemp_k))
 
 
+# Build figures that show the number of sites or the number of months samples as a function of the total number of waterbodies that represent that
+a <- filtered_lakes %>% select(num_months_sampled, waterbody_type,ch4_diff,ch4_ebu) %>% 
+  group_by(num_months_sampled, waterbody_type) %>% summarize(sum_lakes = length((unique(waterbody_id)))) %>%
+  filter(waterbody_type != "pond" & waterbody_type != "lagoon" & waterbody_type != "ditch") %>%
+  melt(., id.vars = c("waterbody_type", "num_months_sampled")) %>%
+  ggplot(., aes(log(num_months_sampled), log(value),  fill = waterbody_type))+
+  geom_point(size = 6, pch = 21, color = "black")+
+  scale_fill_manual(values = c("blue", "orange"))+
+  ylab("log(# of waterbodies)")+
+  xlab("log(# of months sampled)")+
+  theme_classic()+
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+b <- filtered_lakes %>% select(num_sites_sampled, waterbody_type,ch4_diff,ch4_ebu) %>% 
+  group_by(num_sites_sampled, waterbody_type) %>% summarize(sum_lakes = length((unique(waterbody_id)))) %>%
+  filter(waterbody_type != "pond" & waterbody_type != "lagoon" & waterbody_type != "ditch") %>%
+  melt(., id.vars = c("waterbody_type", "num_sites_sampled")) %>%
+  ggplot(., aes(log(num_sites_sampled), log(value), fill = waterbody_type))+
+  geom_point(size = 6, pch = 21, color = "black")+
+  scale_fill_manual(values = c("blue", "orange"))+
+  ylab("log(# of waterbodies)")+
+  xlab("log(# of sampling sites)")+
+  theme_classic()+
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
 # TEMPORAL MEASUREMENT UNCERTAINTY
 # ebullition lakes
 time_base_ebu_lake <- filtered_lakes %>% ungroup(.) %>%
@@ -290,13 +317,14 @@ time_error_ebu_lakes$labels$x <- time_error_ebu_lakes$labels$x <- " "
 xlab2 <- space_error_ebu_lakes$labels$x
 space_error_ebu_lakes$labels$x <- space_error_ebu_lakes$labels$x <- " "
 
+(a|b)/
 (time_error_diff_lakes | time_error_diff_res | time_error_ebu_lakes | time_error_ebu_res) /
 (space_error_diff_lakes | space_error_diff_res | space_error_ebu_lakes | space_error_ebu_res)
 grid::grid.draw(grid::textGrob(ylab, x = 0.02, rot = 90))
 grid::grid.draw(grid::textGrob(xlab1, y = 0.51, rot = 0))
 grid::grid.draw(grid::textGrob(xlab2, y = 0.02, rot = 0))
 
-ggsave("./figures/spatiotemporal_variability.jpeg", device = "jpeg", dpi = 1000, width = 16, height = 6, units = "in")
+ggsave("./figures/spatiotemporal_variability.jpeg", device = "jpeg", dpi = 1000, width = 16, height = 12, units = "in")
 
 
 time_filtered_lakes_error <- filtered_lakes %>%

@@ -1,22 +1,22 @@
 
 library(tidyverse)
 
-dat <- read_csv("./global_predictions.csv") %>%
+dat <- read_csv("./output_data/global_predictions.csv") %>%
   rename(`Variability Source` = group)
 
 
 summary(dat)
 
-cols <- c("a: Past" = "black",
-          "b: Baseline" = "green", 
-          "c: Time-low" = "lightblue2", 
-          "d: Time-high" = "blue2",
-          "e: Space-low" = "pink2", 
-          "f: Space-high" = "red2",
-          "g: Parameter-low" = "darkgoldenrod1",
-          "h: Parameter-high" = "darkorange3",
-          "i: Model-low" = "grey70", 
-          "j: Model-high" = "grey40")
+cols <- c("a: Past Estimates" = "black",
+          "b: Baseline Estimate" = "green", 
+          "c: Low Temporal Fluxes" = "lightblue2", 
+          "d: High Temporal Fluxes" = "blue2",
+          "e: Low Spatial Fluxes" = "pink2", 
+          "f: High Spatial Fluxes" = "red2",
+          "g: Parameter -1SD" = "darkgoldenrod1",
+          "h: Parameter +1SD" = "darkorange3",
+          "i: Model -1RSD" = "grey70", 
+          "j: Model +1RSD" = "grey40")
 
 
 p <- ggplot(dat, aes(x = area_weighted_flux, y = author, group =`Variability Source`,  fill = `Variability Source`))+
@@ -55,9 +55,9 @@ p <- ggplot(dat, aes(x = area_weighted_flux, y = author, group =`Variability Sou
   annotate("text", x=80, y=1.3, label = "+219", size=2)+
   geom_errorbarh(aes(xmax = area_weighted_flux + upper_75, xmin = area_weighted_flux - lower_75, height = .35, color = `Variability Source`))+
   geom_point(pch = 21, size = 6, color = "black")+
-  labs(x = expression(paste("Area Corrected Global CH"[4]," Flux (g CH"[4]," m"^-2," yr"^-1,")")), y = "Emission Estimate Source")
+  labs(x = expression(paste("Standardized Global CH"[4]," Flux (g CH"[4]," m"^-2," yr"^-1,")")), y = "Flux Estimate Variability Source")
   
 p
 
-ggsave("./Global_rate_comparison.jpeg", device = "jpeg", dpi = 1000, width = 20, height = 16, units = "cm")
+ggsave("./figures/Global_rate_comparison.jpeg", device = "jpeg", dpi = 1000, width = 20, height = 16, units = "cm")
   
